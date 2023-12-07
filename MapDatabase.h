@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Product.h"
+
 using namespace std;
 
 class MapDatabase {

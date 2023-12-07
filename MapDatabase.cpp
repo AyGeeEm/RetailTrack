@@ -3,9 +3,10 @@
 #include <utility>
 #include <iomanip>
 #include <fstream>
-#include <cfloat>
 #include <sstream>
+#include <cfloat>
 #include "MapDatabase.h"
+
 using namespace std;
 
 MapDatabase::MapDatabase(int size) : capacity(size), size(0) {
