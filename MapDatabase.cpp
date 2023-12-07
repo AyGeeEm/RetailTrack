@@ -4,9 +4,7 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
-#include <cfloat>
 #include "MapDatabase.h"
-
 using namespace std;
 
 MapDatabase::MapDatabase(int size) : capacity(size), size(0) {
@@ -34,7 +32,6 @@ void MapDatabase::resizeHashtable() {
         }
     }
 
-    //___________________ CHECK IF WORKS
     hashTable = newHashtable;
 }
 
@@ -121,7 +118,7 @@ bool MapDatabase::printItem(int id) {
                 cout << left << setw(30) << "Amount Sold: " << currentNode->value.getQuantitySold() << '\n';
                 cout << left << setw(30) << "Average Cost: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageCost() << '\n';
                 cout << left << setw(30) << "Average Sale: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageSale() << '\n';
-                cout << left << setw(30) << "Sold Item Profit: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageSale() * currentNode->value.getQuantitySold() - currentNode->value.getAverageCost() * currentNode->value.getQuantity() << '\n';
+                cout << left << setw(30) << "Sold Item Profit: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageSale() * currentNode->value.getQuantitySold() - currentNode->value.getAverageCost() * currentNode->value.getQuantitySold() << '\n';
                 cout << left << setw(30) << "Unsold Inventory Cost: " << "$" << fixed <<setprecision(2) << currentNode->value.getAverageCost() * (currentNode->value.getQuantity() - currentNode->value.getQuantitySold()) << '\n' << '\n';
 
                 return true;
@@ -145,7 +142,7 @@ void MapDatabase::printSalesReport() {
         {"[5] = sale amount of 4", 0.0f},
         {"[6] = product ID with the highest '%' over retail", -1},
         {"[7] = '%' over retail of 6", 0.0f},
-        {"[8] = min remaining inventory revenue", FLT_MAX}
+        {"[8] = min remaining inventory revenue", 0.0f}
     };
 
     cout << "\nInventory:\n" << endl;
@@ -155,14 +152,14 @@ void MapDatabase::printSalesReport() {
         while (current) {
             //Calculate and accumulate total costs and revenue
 
-            cout << left << setw(30) << "ID: " << currentNode->key << '\n';
-            cout << left << setw(30) << "Current Stock: " << currentNode->value.getQuantity() - currentNode->value.getQuantitySold() << '\n';
-            cout << left << setw(30) << "Amount Bought: " << currentNode->value.getQuantity() << '\n';
-            cout << left << setw(30) << "Amount Sold: " << currentNode->value.getQuantitySold() << '\n';
-            cout << left << setw(30) << "Average Cost: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageCost() << '\n';
-            cout << left << setw(30) << "Average Sale: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageSale() << '\n';
-            cout << left << setw(30) << "Sold Item Profit: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageSale() * currentNode->value.getQuantitySold() - currentNode->value.getAverageCost() * currentNode->value.getQuantity() << '\n';
-            cout << left << setw(30) << "Unsold Inventory Cost: " << "$" << fixed << setprecision(2) << currentNode->value.getAverageCost() * (currentNode->value.getQuantity() - currentNode->value.getQuantitySold()) << '\n' << '\n';
+            cout << left << setw(30) << "ID: " << current->key << '\n';
+            cout << left << setw(30) << "Current Stock: " << current->value.getQuantity() - current->value.getQuantitySold() << '\n';
+            cout << left << setw(30) << "Amount Bought: " << current->value.getQuantity() << '\n';
+            cout << left << setw(30) << "Amount Sold: " << current->value.getQuantitySold() << '\n';
+            cout << left << setw(30) << "Average Cost: " << "$" << fixed << setprecision(2) << current->value.getAverageCost() << '\n';
+            cout << left << setw(30) << "Average Sale: " << "$" << fixed << setprecision(2) << current->value.getAverageSale() << '\n';
+            cout << left << setw(30) << "Sold Item Profit: " << "$" << fixed << setprecision(2) << current->value.getAverageSale() * current->value.getQuantitySold() - current->value.getAverageCost() * current->value.getQuantitySold() << '\n';
+            cout << left << setw(30) << "Unsold Inventory Cost: " << "$" << fixed << setprecision(2) << current->value.getAverageCost() * (current->value.getQuantity() - current->value.getQuantitySold()) << '\n' << '\n';
 
             salesInfo[0].second += current->value.getAverageCost() * current->value.getQuantity();
             salesInfo[1].second += current->value.getAverageSale() * current->value.getQuantitySold();
@@ -185,9 +182,7 @@ void MapDatabase::printSalesReport() {
 
             //Calculate revenue from remaining inventory and check for minimum
             float remainingInventoryRevenue = current->value.getAverageCost() * (current->value.getQuantity() - current->value.getQuantitySold());
-            if (remainingInventoryRevenue < salesInfo[8].second) {
-                salesInfo[8].second = remainingInventoryRevenue;
-            }
+            salesInfo[8].second += remainingInventoryRevenue;
 
             current = current->next;
         }
@@ -208,7 +203,7 @@ void MapDatabase::printSalesReport() {
     cout << left << setw(30) << "Total Bought:" << int(salesInfo[2].second) << '\n';
     cout << left << setw(30) << "Total Sold:" << int(salesInfo[3].second) << '\n';
     cout << left << setw(30) << "Highest Sales:" << int(salesInfo[4].second) << " - " << int(salesInfo[5].second) << '\n';
-    cout << left << setw(30) << "Highest % Profit:" << int(salesInfo[6].second) << " - %" << fixed << setprecision(2) << salesInfo[7].second * 100 << '\n';
+    cout << left << setw(30) << "Highest % Profit:" << int(salesInfo[6].second) << " - %" << fixed << setprecision(2) << salesInfo[7].second << '\n';
     cout << '\n';
 }
 
